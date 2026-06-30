@@ -14,14 +14,18 @@ echo "Backups atuais:"
 ls -lh "$BACKUP_DIR"
 echo ""
 
-TOTAL=$(ls "$BACKUP_DIR" | wc -l)
+TOTAL=$(find "$BACKUP_DIR" -maxdepth 1 -type f -name "*.sql.gz" | wc -l)
 
 if [ "$TOTAL" -le "$KEEP" ]; then
   echo "[OK] Nada para remover. Total de backups: $TOTAL"
 else
   REMOVE=$((TOTAL - KEEP))
   echo "Removendo $REMOVE backup(s) antigo(s)..."
-  ls -t "$BACKUP_DIR" | tail -n "$REMOVE" | xargs -I {} rm "$BACKUP_DIR/{}"
+  find "$BACKUP_DIR" -maxdepth 1 -type f -name "*.sql.gz" -printf '%T@ %p\n' \
+    | sort -n \
+    | head -n "$REMOVE" \
+    | cut -d' ' -f2- \
+    | xargs -r rm
   echo "[OK] Limpeza concluida. Backups mantidos: $KEEP"
 fi
 
