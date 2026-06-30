@@ -1,31 +1,34 @@
-#!/bin/bash
+bash#!/bin/bash
 
 echo "======================================"
 echo " Infrastructure Playground - Health Check"
 echo "======================================"
 echo ""
 
+
 if docker info > /dev/null 2>&1; then
-  echo "✅ Docker rodando"
+  echo " Docker rodando"
 else
-  echo "❌ Docker não está rodando"
+  echo " Docker não está rodando"
   exit 1
 fi
+
 
 CONTAINERS=("playground-postgres" "playground-redis" "playground-nginx" "playground-adminer")
 
 for CONTAINER in "${CONTAINERS[@]}"; do
   STATUS=$(docker inspect --format='{{.State.Status}}' "$CONTAINER" 2>/dev/null)
   if [ "$STATUS" = "running" ]; then
-    echo "✅ $CONTAINER → running"
+    echo " $CONTAINER → running"
   else
-    echo "❌ $CONTAINER → $STATUS"
+    echo " $CONTAINER → $STATUS"
   fi
 done
 
 echo ""
 echo "Verificando portas..."
 echo ""
+
 
 PORTS=(80 8080 5432 6379)
 NAMES=("Nginx" "Adminer" "PostgreSQL" "Redis")
@@ -34,9 +37,9 @@ for i in "${!PORTS[@]}"; do
   PORT=${PORTS[$i]}
   NAME=${NAMES[$i]}
   if ss -tln | grep -q ":$PORT "; then
-    echo "✅ $NAME → porta $PORT aberta"
+    echo " $NAME → porta $PORT aberta"
   else
-    echo "❌ $NAME → porta $PORT fechada"
+    echo " $NAME → porta $PORT fechada"
   fi
 done
 
