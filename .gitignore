@@ -11,4 +11,8 @@ backups/
 .DS_Store
 Thumbs.db
 
-docker-compose.override.yml
+docker-compose.override.yml 
+
+# IntelliJ
+.idea/
+*.iml 

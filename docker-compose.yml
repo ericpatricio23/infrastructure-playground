@@ -1,0 +1,51 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: playground-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: playground
+      POSTGRES_PASSWORD: playground123
+      POSTGRES_DB: playgrounddb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - playground-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: playground-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - playground-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: playground-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./docker/nginx:/etc/nginx/conf.d
+    networks:
+      - playground-network
+
+  adminer:
+    image: adminer
+    container_name: playground-adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    networks:
+      - playground-network
+
+volumes:
+  postgres_data:
+
+networks:
+  playground-network:
+    driver: bridge
