@@ -1,21 +1,20 @@
-
 # Infrastructure Playground
 
 Ambiente completo para desenvolver, automatizar e fazer deploy de aplicações. Combina infraestrutura Docker com uma API Spring Boot segura.
 
 ## Visão Geral
 Cliente
-│
-▼
+|
+v
 Nginx (porta 80)
-│
-├── /auth/**  ──► Spring Boot API
-├── /api/**   ──► Spring Boot API
-│                     │
-│                     ├── PostgreSQL
-│                     └── Redis
-│
-└── Adminer (porta 8080)
+|
+|-- /auth/**  --> Spring Boot API
+|-- /api/**   --> Spring Boot API
+|                     |
+|                     |-- PostgreSQL
+|                     |-- Redis
+|
+|-- Adminer (porta 8080)
 
 ## Tecnologias
 
@@ -76,7 +75,7 @@ DELETE /api/secrets/{id}   Remover segredo
 
 ```bash
 bash scripts/setup.sh        # Prepara e sobe o ambiente
-bash scripts/healthcheck.sh  # Verifica saúde dos serviços
+bash scripts/healthcheck.sh  # Verifica saude dos servicos
 bash scripts/monitor.sh      # Monitora uso de recursos
 bash scripts/backup.sh       # Gera backup do PostgreSQL
 bash scripts/cleanup.sh      # Remove backups antigos
@@ -85,15 +84,15 @@ bash scripts/deploy.sh       # Realiza deploy local
 
 ## Estrutura do projeto
 infrastructure-playground/
-├── app/
-│   └── secret-vault/        # API Spring Boot
-├── docker/
-│   └── nginx/               # Configuração do Nginx
-├── scripts/                 # Scripts de automação
-├── docs/                    # Documentação técnica
-├── backups/                 # Backups do banco
-├── logs/                    # Logs da aplicação
-└── docker-compose.yml       # Orquestração dos containers
+|-- app/
+|   |-- secret-vault/        # API Spring Boot
+|-- docker/
+|   |-- nginx/               # Configuracao do Nginx
+|-- scripts/                 # Scripts de automacao
+|-- docs/                    # Documentacao tecnica
+|-- backups/                 # Backups do banco
+|-- logs/                    # Logs da aplicacao
+|-- docker-compose.yml       # Orquestracao dos containers
 
 ## Documentação
 
