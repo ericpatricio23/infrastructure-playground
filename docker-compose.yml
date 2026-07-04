@@ -11,8 +11,6 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    networks:
-      - playground-network
 
   redis:
     image: redis:7-alpine
@@ -20,8 +18,25 @@ services:
     restart: unless-stopped
     ports:
       - "6379:6379"
-    networks:
-      - playground-network
+
+  secret-vault:
+    build: ./app/secret-vault
+    container_name: playground-secret-vault
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/playgrounddb
+      SPRING_DATASOURCE_USERNAME: playground
+      SPRING_DATASOURCE_PASSWORD: playground123
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      JWT_SECRET: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+      JWT_EXPIRATION: 86400000
+      ENCRYPTION_KEY: 1234567890123456
+    depends_on:
+      - postgres
+      - redis
 
   nginx:
     image: nginx:alpine
@@ -31,8 +46,8 @@ services:
       - "80:80"
     volumes:
       - ./docker/nginx:/etc/nginx/conf.d
-    networks:
-      - playground-network
+    depends_on:
+      - secret-vault
 
   adminer:
     image: adminer
@@ -40,12 +55,6 @@ services:
     restart: unless-stopped
     ports:
       - "8080:8080"
-    networks:
-      - playground-network
 
 volumes:
   postgres_data:
-
-networks:
-  playground-network:
-    driver: bridge
