@@ -1,101 +1,147 @@
 # Infrastructure Playground
 
-Ambiente completo para desenvolver, automatizar e fazer deploy de aplicações. Combina infraestrutura Docker com uma API Spring Boot segura.
+Ambiente completo para desenvolver, automatizar e realizar deploy de aplicações utilizando Docker, Nginx e uma API Spring Boot segura.
 
-## Visão Geral
+---
+
+## 📚 Visão Geral
+
+```text
 Cliente
-|
-v
+   │
+   ▼
 Nginx (porta 80)
-|
-|-- /auth/**  --> Spring Boot API
-|-- /api/**   --> Spring Boot API
-|                     |
-|                     |-- PostgreSQL
-|                     |-- Redis
-|
-|-- Adminer (porta 8080)
+   │
+   ├── /auth/** ─────► Spring Boot API
+   ├── /api/** ──────► Spring Boot API
+   │                      │
+   │                      ├── PostgreSQL
+   │                      └── Redis
+   │
+   └── Adminer (porta 8080)
+```
 
-## Tecnologias
+---
 
-**Infraestrutura**
-- Docker e Docker Compose
-- Nginx (reverse proxy)
+## 🚀 Tecnologias
+
+### Infraestrutura
+
+- Docker
+- Docker Compose
+- Nginx (Reverse Proxy)
 - PostgreSQL 16
 - Redis 7
 - GitHub Actions (CI)
 - Shell Script
 
-**API (secret-vault)**
-- Java 21 + Spring Boot 3
-- Spring Security + JWT
+### API (`secret-vault`)
+
+- Java 21
+- Spring Boot 3
+- Spring Security
+- JWT
 - Criptografia AES
-- Spring Data JPA + PostgreSQL
+- Spring Data JPA
+- PostgreSQL
 - Spring Data Redis
 
-## Como rodar
+---
+
+## ⚙️ Como executar
 
 ### Pré-requisitos
-- Docker Desktop instalado e rodando
+
+- Docker Desktop
 - Git
 
-### Passos
+### Clone o projeto
 
 ```bash
 git clone https://github.com/ericpatricio23/infrastructure-playground.git
 cd infrastructure-playground
+```
+
+### Inicie o ambiente
+
+```bash
 bash scripts/setup.sh
 ```
 
-Aguarde todos os containers subirem. A API será buildada automaticamente.
+Todos os containers serão criados automaticamente.
 
-## Serviços disponíveis
+---
 
-| Serviço    | URL                   |
-|------------|-----------------------|
-| API        | http://localhost      |
-| Adminer    | http://localhost:8080 |
-| PostgreSQL | localhost:5432        |
-| Redis      | localhost:6379        |
+## 🌐 Serviços
 
-## Endpoints
+| Serviço | Endereço |
+|---------|----------|
+| API | http://localhost |
+| Adminer | http://localhost:8080 |
+| PostgreSQL | localhost:5432 |
+| Redis | localhost:6379 |
 
-**Autenticação**
-POST /auth/register   Cadastro de usuário
-POST /auth/login      Login e geração de JWT
+---
 
-**Segredos** *(requer JWT no header Authorization: Bearer token)*
-POST   /api/secrets        Criar segredo
-GET    /api/secrets        Listar segredos
-GET    /api/secrets/{id}   Buscar segredo por ID
-PUT    /api/secrets/{id}   Atualizar segredo
-DELETE /api/secrets/{id}   Remover segredo
+## 🔑 Endpoints
 
-## Scripts de automação
+### Autenticação
 
-```bash
-bash scripts/setup.sh        # Prepara e sobe o ambiente
-bash scripts/healthcheck.sh  # Verifica saude dos servicos
-bash scripts/monitor.sh      # Monitora uso de recursos
-bash scripts/backup.sh       # Gera backup do PostgreSQL
-bash scripts/cleanup.sh      # Remove backups antigos
-bash scripts/deploy.sh       # Realiza deploy local
+| Método | Endpoint | Descrição |
+|---------|----------|-----------|
+| POST | `/auth/register` | Cadastro de usuário |
+| POST | `/auth/login` | Login e geração de JWT |
+
+### Segredos (JWT obrigatório)
+
+Adicione o seguinte header:
+
+```text
+Authorization: Bearer <token>
 ```
 
-## Estrutura do projeto
+| Método | Endpoint | Descrição |
+|---------|----------|-----------|
+| POST | `/api/secrets` | Criar segredo |
+| GET | `/api/secrets` | Listar segredos |
+| GET | `/api/secrets/{id}` | Buscar por ID |
+| PUT | `/api/secrets/{id}` | Atualizar |
+| DELETE | `/api/secrets/{id}` | Remover |
+
+---
+
+## 📜 Scripts
+
+| Script | Descrição |
+|---------|-----------|
+| `bash scripts/setup.sh` | Prepara e sobe o ambiente |
+| `bash scripts/healthcheck.sh` | Verifica a saúde dos serviços |
+| `bash scripts/monitor.sh` | Monitora o uso de recursos |
+| `bash scripts/backup.sh` | Gera backup do PostgreSQL |
+| `bash scripts/cleanup.sh` | Remove backups antigos |
+| `bash scripts/deploy.sh` | Realiza deploy local |
+
+---
+
+## 📁 Estrutura do projeto
+
+```text
 infrastructure-playground/
-|-- app/
-|   |-- secret-vault/        # API Spring Boot
-|-- docker/
-|   |-- nginx/               # Configuracao do Nginx
-|-- scripts/                 # Scripts de automacao
-|-- docs/                    # Documentacao tecnica
-|-- backups/                 # Backups do banco
-|-- logs/                    # Logs da aplicacao
-|-- docker-compose.yml       # Orquestracao dos containers
+├── app/
+│   └── secret-vault/
+├── docker/
+│   └── nginx/
+├── scripts/
+├── docs/
+├── backups/
+├── logs/
+└── docker-compose.yml
+```
 
-## Documentação
+---
 
-- [Arquitetura](docs/architecture.md)
-- [Docker](docs/docker.md)
-- [Linux e Scripts](docs/linux.md)
+## 📖 Documentação
+
+- Arquitetura (`docs/architecture.md`)
+- Docker (`docs/docker.md`)
+- Linux e Scripts (`docs/linux.md`)
