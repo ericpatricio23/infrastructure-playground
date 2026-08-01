@@ -4,6 +4,7 @@ import com.eric.secret_vault.dto.AuthResponse;
 import com.eric.secret_vault.dto.LoginRequest;
 import com.eric.secret_vault.dto.RegisterRequest;
 import com.eric.secret_vault.entity.User;
+import com.eric.secret_vault.exception.ResourceAlreadyExistsException;
 import com.eric.secret_vault.repository.UserRepository;
 import com.eric.secret_vault.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -23,10 +24,10 @@ public class AuthService {
 
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
-            throw new RuntimeException("Username ja existe");
+            throw new ResourceAlreadyExistsException("Username ja existe");
         }
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email ja cadastrado");
+            throw new ResourceAlreadyExistsException("Email ja cadastrado");
         }
 
         User user = User.builder()

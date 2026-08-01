@@ -4,6 +4,7 @@ import com.eric.secret_vault.dto.SecretRequest;
 import com.eric.secret_vault.dto.SecretResponse;
 import com.eric.secret_vault.entity.Secret;
 import com.eric.secret_vault.entity.User;
+import com.eric.secret_vault.exception.ResourceNotFoundException;
 import com.eric.secret_vault.repository.SecretRepository;
 import com.eric.secret_vault.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -48,14 +49,14 @@ public class SecretService {
     public SecretResponse findById(String username, Long id) {
         User user = getUser(username);
         Secret secret = secretRepository.findByIdAndUserId(id, user.getId())
-                .orElseThrow(() -> new RuntimeException("Segredo nao encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Segredo nao encontrado"));
         return toResponse(secret, encryptionService.decrypt(secret.getEncryptedValue()));
     }
 
     public SecretResponse update(String username, Long id, SecretRequest request) {
         User user = getUser(username);
         Secret secret = secretRepository.findByIdAndUserId(id, user.getId())
-                .orElseThrow(() -> new RuntimeException("Segredo nao encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Segredo nao encontrado"));
         secret.setName(request.getName());
         secret.setEncryptedValue(encryptionService.encrypt(request.getValue()));
         secretRepository.save(secret);
@@ -65,7 +66,7 @@ public class SecretService {
     public void delete(String username, Long id) {
         User user = getUser(username);
         Secret secret = secretRepository.findByIdAndUserId(id, user.getId())
-                .orElseThrow(() -> new RuntimeException("Segredo nao encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Segredo nao encontrado"));
         secretRepository.delete(secret);
     }
 
