@@ -73,15 +73,6 @@ services:
       secret-vault:
         condition: service_healthy
 
-  adminer:
-    image: adminer
-    container_name: playground-adminer
-    restart: unless-stopped
-    ports:
-      - "8080:8080"
-    networks:
-      - backend
-
 networks:
   frontend:
   backend:
