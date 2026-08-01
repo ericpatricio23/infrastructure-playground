@@ -4,9 +4,9 @@ services:
     container_name: playground-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: playground
-      POSTGRES_PASSWORD: playground123
-      POSTGRES_DB: playgrounddb
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5432:5432"
     volumes:
@@ -26,14 +26,14 @@ services:
     ports:
       - "8081:8081"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/playgrounddb
-      SPRING_DATASOURCE_USERNAME: playground
-      SPRING_DATASOURCE_PASSWORD: playground123
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
-      JWT_SECRET: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
-      JWT_EXPIRATION: 86400000
-      ENCRYPTION_KEY: 1234567890123456
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION: ${JWT_EXPIRATION}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
     depends_on:
       - postgres
       - redis
