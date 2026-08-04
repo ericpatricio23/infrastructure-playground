@@ -11,6 +11,11 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - backend
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: "0.5"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
@@ -24,6 +29,11 @@ services:
     restart: unless-stopped
     networks:
       - backend
+    deploy:
+      resources:
+        limits:
+          memory: 100M
+          cpus: "0.25"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
@@ -44,9 +54,15 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRATION: ${JWT_EXPIRATION}
       ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      JAVA_TOOL_OPTIONS: "-Xmx350m"
     networks:
       - backend
       - frontend
+    deploy:
+      resources:
+        limits:
+          memory: 450M
+          cpus: "0.75"
     depends_on:
       postgres:
         condition: service_healthy
@@ -69,6 +85,11 @@ services:
       - ./docker/nginx:/etc/nginx/conf.d
     networks:
       - frontend
+    deploy:
+      resources:
+        limits:
+          memory: 50M
+          cpus: "0.25"
     depends_on:
       secret-vault:
         condition: service_healthy
