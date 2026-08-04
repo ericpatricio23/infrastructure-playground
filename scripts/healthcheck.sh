@@ -12,23 +12,30 @@ else
   exit 1
 fi
 
-CONTAINERS=("playground-postgres" "playground-redis" "playground-nginx" "playground-adminer")
+CONTAINERS=("playground-postgres" "playground-redis" "playground-secret-vault" "playground-nginx")
 
 for CONTAINER in "${CONTAINERS[@]}"; do
   STATUS=$(docker inspect --format='{{.State.Status}}' "$CONTAINER" 2>/dev/null)
+  HEALTH=$(docker inspect --format='{{.State.Health.Status}}' "$CONTAINER" 2>/dev/null)
   if [ "$STATUS" = "running" ]; then
-    echo "✅ $CONTAINER → running"
+    if [ -n "$HEALTH" ] && [ "$HEALTH" != "<no value>" ]; then
+      echo "✅ $CONTAINER → running ($HEALTH)"
+    else
+      echo "✅ $CONTAINER → running"
+    fi
   else
-    echo "❌ $CONTAINER → $STATUS"
+    echo "❌ $CONTAINER → ${STATUS:-not found}"
   fi
 done
 
 echo ""
-echo "Verificando portas..."
+echo "Verificando portas expostas ao host..."
 echo ""
 
-PORTS=(80 8080 5432 6379)
-NAMES=("Nginx" "Adminer" "PostgreSQL" "Redis")
+# Postgres (5432) e Redis (6379) não devem aparecer aqui:
+# ficam isolados na rede interna 'backend' de propósito.
+PORTS=(80)
+NAMES=("Nginx")
 
 for i in "${!PORTS[@]}"; do
   PORT=${PORTS[$i]}
@@ -39,6 +46,15 @@ for i in "${!PORTS[@]}"; do
     echo "❌ $NAME → porta $PORT fechada"
   fi
 done
+
+# Adminer só existe no docker-compose.override.yml (uso local via Compose).
+if docker inspect playground-adminer > /dev/null 2>&1; then
+  if ss -tln | grep -q ":8080 "; then
+    echo "✅ Adminer (dev local) → porta 8080 aberta"
+  else
+    echo "❌ Adminer (dev local) → porta 8080 fechada"
+  fi
+fi
 
 echo ""
 echo "======================================"
